@@ -63,6 +63,8 @@ go test -cover ./...
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
 
+**Each commit must be a single logical unit of change.** Do not mix unrelated changes in one commit.
+
 ```
 <type>[optional scope]: <description>
 
