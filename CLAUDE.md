@@ -57,6 +57,7 @@ go test -cover ./...
 - Use Bubble Tea patterns for state management
 - Tests are co-located with source files (`*_test.go`)
 - Write all documentation and code comments in English
+- Run `go fmt ./...`, `go vet ./...`, and `go test ./...` before committing code changes
 
 ## Commit Conventions
 
