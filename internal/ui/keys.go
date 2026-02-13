@@ -4,17 +4,17 @@ import "github.com/charmbracelet/bubbletea"
 
 // KeyMap defines all key bindings
 type KeyMap struct {
-	Up        []string
-	Down      []string
-	Left      []string
-	Right     []string
-	Indent    []string
-	Unindent  []string
-	Enter     []string
-	Delete    []string
-	Copy      []string
-	Quit      []string
-	Help      []string
+	Up       []string
+	Down     []string
+	Left     []string
+	Right    []string
+	Indent   []string
+	Unindent []string
+	Enter    []string
+	Delete   []string
+	Copy     []string
+	Quit     []string
+	Help     []string
 }
 
 // DefaultKeyMap returns the default key bindings

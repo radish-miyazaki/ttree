@@ -17,17 +17,17 @@ const (
 
 // Model represents the application state
 type Model struct {
-	tree       *tree.Tree
-	renderer   *render.Renderer
-	cursor     int           // Current cursor position in flattened list
-	nodes      []*tree.Node  // Flattened visible nodes
-	mode       Mode
-	textInput  textinput.Model
-	width      int
-	height     int
-	keys       KeyMap
-	message    string        // Status message
-	copied     bool          // Flash message for copy
+	tree      *tree.Tree
+	renderer  *render.Renderer
+	cursor    int          // Current cursor position in flattened list
+	nodes     []*tree.Node // Flattened visible nodes
+	mode      Mode
+	textInput textinput.Model
+	width     int
+	height    int
+	keys      KeyMap
+	message   string // Status message
+	copied    bool   // Flash message for copy
 }
 
 // New creates a new model

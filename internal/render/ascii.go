@@ -8,10 +8,10 @@ import (
 
 // Style defines the characters used for tree rendering
 type Style struct {
-	Branch    string // ├──
+	Branch     string // ├──
 	LastBranch string // └──
-	Vertical  string // │
-	Space     string //
+	Vertical   string // │
+	Space      string //
 }
 
 // DefaultStyle returns the default ASCII tree style
