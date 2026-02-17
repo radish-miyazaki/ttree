@@ -2,6 +2,10 @@
 
 A terminal-based interactive tree structure editor. Create, edit, and organize hierarchical data with vim-style navigation, then copy the ASCII tree output to your clipboard.
 
+## Demo
+
+<img src="vhs/demo.gif" alt="ttree demo" width="600">
+
 ## Features
 
 - Interactive tree editing in the terminal
