@@ -46,6 +46,8 @@ go build -o ttree .
 | `Shift+Tab` | Unindent node (make sibling of parent) |
 | `Enter` | Create new sibling node |
 | `Ctrl+D` | Delete current node |
+| `Ctrl+Z` | Undo |
+| `Ctrl+Y` / `Ctrl+R` | Redo |
 | `Ctrl+C` | Copy tree to clipboard |
 | `Ctrl+Q` / `Esc` | Quit |
 

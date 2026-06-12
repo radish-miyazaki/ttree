@@ -46,6 +46,8 @@ go build -o ttree .
 | `Shift+Tab` | ノードをアンインデント(親の兄弟ノードにする) |
 | `Enter` | 新しい兄弟ノードを作成 |
 | `Ctrl+D` | 現在のノードを削除 |
+| `Ctrl+Z` | 元に戻す(undo) |
+| `Ctrl+Y` / `Ctrl+R` | やり直す(redo) |
 | `Ctrl+C` | ツリーをクリップボードにコピー |
 | `Ctrl+Q` / `Esc` | 終了 |
 
