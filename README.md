@@ -1,5 +1,7 @@
 # ttree
 
+English | [日本語](README.ja.md)
+
 A terminal-based interactive tree structure editor. Create, edit, and organize hierarchical data with vim-style navigation, then copy the ASCII tree output to your clipboard.
 
 ## Demo
