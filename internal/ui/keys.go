@@ -13,6 +13,8 @@ type KeyMap struct {
 	Enter    []string
 	Delete   []string
 	Copy     []string
+	Undo     []string
+	Redo     []string
 	Quit     []string
 	Help     []string
 }
@@ -29,6 +31,8 @@ func DefaultKeyMap() KeyMap {
 		Enter:    []string{"enter"},
 		Delete:   []string{"ctrl+d", "ctrl+backspace"},
 		Copy:     []string{"ctrl+c"},
+		Undo:     []string{"ctrl+z"},
+		Redo:     []string{"ctrl+y", "ctrl+r"},
 		Quit:     []string{"ctrl+q", "esc"},
 		Help:     []string{"ctrl+?", "f1"},
 	}

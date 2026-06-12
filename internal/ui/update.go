@@ -55,6 +55,28 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
+	// Undo / Redo
+	if matches(msg, m.keys.Undo) {
+		m.saveCurrentEdit()
+		if s, ok := m.history.undoTo(m.currentSnapshot()); ok {
+			m.restore(s)
+			m.message = "Undo"
+		} else {
+			m.message = "Nothing to undo"
+		}
+		return m, nil
+	}
+	if matches(msg, m.keys.Redo) {
+		m.saveCurrentEdit()
+		if s, ok := m.history.redoTo(m.currentSnapshot()); ok {
+			m.restore(s)
+			m.message = "Redo"
+		} else {
+			m.message = "Nothing to redo"
+		}
+		return m, nil
+	}
+
 	// Navigation
 	if matches(msg, m.keys.Up) {
 		m.moveCursor(-1)
@@ -69,7 +91,10 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if matches(msg, m.keys.Indent) {
 		m.saveCurrentEdit()
 		if node := m.currentNode(); node != nil {
-			m.tree.Indent(node)
+			before := m.currentSnapshot()
+			if m.tree.Indent(node) {
+				m.pushUndo(before)
+			}
 			m.refreshNodes()
 			m.focusNode(node)
 		}
@@ -78,7 +103,10 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if matches(msg, m.keys.Unindent) {
 		m.saveCurrentEdit()
 		if node := m.currentNode(); node != nil {
-			m.tree.Unindent(node)
+			before := m.currentSnapshot()
+			if m.tree.Unindent(node) {
+				m.pushUndo(before)
+			}
 			m.refreshNodes()
 			m.focusNode(node)
 		}
@@ -89,6 +117,7 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if matches(msg, m.keys.Enter) {
 		m.saveCurrentEdit()
 		if node := m.currentNode(); node != nil {
+			m.pushUndo(m.currentSnapshot())
 			newNode := tree.NewNode("")
 			m.tree.InsertAfter(node, newNode)
 			m.refreshNodes()
@@ -101,6 +130,7 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if matches(msg, m.keys.Delete) {
 		m.saveCurrentEdit()
 		if node := m.currentNode(); node != nil {
+			m.pushUndo(m.currentSnapshot())
 			nextFocus := m.tree.Delete(node)
 			m.refreshNodes()
 			if nextFocus != nil {
@@ -112,9 +142,16 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	// Pass to text input
 	if m.mode == ModeEdit {
+		before := m.currentSnapshot()
+		oldValue := m.textInput.Value()
 		var cmd tea.Cmd
 		m.textInput, cmd = m.textInput.Update(msg)
 		if node := m.currentNode(); node != nil {
+			// Consecutive edits to the same node coalesce into one undo step
+			if m.textInput.Value() != oldValue && m.lastEditID != node.ID {
+				m.history.record(before)
+				m.lastEditID = node.ID
+			}
 			node.Text = m.textInput.Value()
 		}
 		return m, cmd

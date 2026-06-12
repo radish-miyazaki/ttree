@@ -127,6 +127,8 @@ func (m Model) buildHelpLine() string {
 		"S-Tab:unindent",
 		"Enter:new",
 		"C-d:delete",
+		"C-z:undo",
+		"C-y:redo",
 		"C-c:copy",
 		"C-q:quit",
 	}

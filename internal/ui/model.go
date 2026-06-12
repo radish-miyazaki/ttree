@@ -17,17 +17,19 @@ const (
 
 // Model represents the application state
 type Model struct {
-	tree      *tree.Tree
-	renderer  *render.Renderer
-	cursor    int          // Current cursor position in flattened list
-	nodes     []*tree.Node // Flattened visible nodes
-	mode      Mode
-	textInput textinput.Model
-	width     int
-	height    int
-	keys      KeyMap
-	message   string // Status message
-	copied    bool   // Flash message for copy
+	tree       *tree.Tree
+	renderer   *render.Renderer
+	cursor     int          // Current cursor position in flattened list
+	nodes      []*tree.Node // Flattened visible nodes
+	mode       Mode
+	textInput  textinput.Model
+	width      int
+	height     int
+	keys       KeyMap
+	message    string // Status message
+	copied     bool   // Flash message for copy
+	history    history
+	lastEditID string // Node ID of the ongoing text edit, for undo coalescing
 }
 
 // New creates a new model
@@ -107,6 +109,26 @@ func (m *Model) moveCursor(delta int) {
 		m.cursor = newPos
 		m.syncTextInput()
 	}
+}
+
+// currentSnapshot captures the current tree and cursor for the history stacks
+func (m *Model) currentSnapshot() snapshot {
+	return snapshot{tree: m.tree.Clone(), cursor: m.cursor}
+}
+
+// pushUndo records a pre-mutation snapshot and ends any text edit coalescing
+func (m *Model) pushUndo(s snapshot) {
+	m.history.record(s)
+	m.lastEditID = ""
+}
+
+// restore applies a snapshot to the model
+func (m *Model) restore(s snapshot) {
+	m.tree = s.tree
+	m.cursor = s.cursor
+	m.refreshNodes()
+	m.syncTextInput()
+	m.lastEditID = ""
 }
 
 // focusNode sets cursor to specific node

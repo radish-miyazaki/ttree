@@ -373,3 +373,63 @@ func TestDeleteReturnsParent(t *testing.T) {
 		t.Error("expected next focus to be parent when last child deleted")
 	}
 }
+
+func TestClone(t *testing.T) {
+	original := NewTree()
+	first := original.Root.Children[0]
+	first.Text = "parent"
+	child := NewNode("child")
+	first.AddChild(child)
+
+	clone := original.Clone()
+
+	// Structure and content are copied
+	if len(clone.Root.Children) != 1 {
+		t.Fatalf("expected 1 root child, got %d", len(clone.Root.Children))
+	}
+	clonedFirst := clone.Root.Children[0]
+	if clonedFirst.Text != "parent" {
+		t.Errorf("expected text 'parent', got %q", clonedFirst.Text)
+	}
+	if len(clonedFirst.Children) != 1 || clonedFirst.Children[0].Text != "child" {
+		t.Error("expected child node to be cloned")
+	}
+
+	// IDs are preserved so focus can be restored across snapshots
+	if clonedFirst.ID != first.ID {
+		t.Errorf("expected ID %q to be preserved, got %q", first.ID, clonedFirst.ID)
+	}
+
+	// Parent links are rebuilt within the clone
+	if clonedFirst.Children[0].Parent != clonedFirst {
+		t.Error("expected cloned child to point to cloned parent")
+	}
+	if clonedFirst.Parent != clone.Root {
+		t.Error("expected cloned first node to point to cloned root")
+	}
+
+	// Deep copy: mutating the clone must not affect the original
+	clonedFirst.Text = "changed"
+	clonedFirst.Children[0].Text = "changed too"
+	if first.Text != "parent" || child.Text != "child" {
+		t.Error("mutating clone must not affect original")
+	}
+
+	// Deep copy: mutating original structure must not affect the clone
+	first.AddChild(NewNode("extra"))
+	if len(clonedFirst.Children) != 1 {
+		t.Error("mutating original must not affect clone")
+	}
+}
+
+func TestCloneExpandedState(t *testing.T) {
+	original := NewTree()
+	first := original.Root.Children[0]
+	first.Expanded = false
+
+	clone := original.Clone()
+
+	if clone.Root.Children[0].Expanded {
+		t.Error("expected Expanded=false to be preserved in clone")
+	}
+}

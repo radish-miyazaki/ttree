@@ -94,6 +94,27 @@ func NewTree() *Tree {
 	return &Tree{Root: root}
 }
 
+// Clone returns a deep copy of the tree. Node IDs are preserved so
+// references (e.g. focus) can be restored across snapshots.
+func (t *Tree) Clone() *Tree {
+	return &Tree{Root: t.Root.clone(nil)}
+}
+
+// clone returns a deep copy of the node with the given parent.
+func (n *Node) clone(parent *Node) *Node {
+	c := &Node{
+		ID:       n.ID,
+		Text:     n.Text,
+		Parent:   parent,
+		Expanded: n.Expanded,
+		Children: make([]*Node, 0, len(n.Children)),
+	}
+	for _, child := range n.Children {
+		c.Children = append(c.Children, child.clone(c))
+	}
+	return c
+}
+
 // FlattenVisible returns all visible nodes in order (for display)
 func (t *Tree) FlattenVisible() []*Node {
 	var result []*Node
